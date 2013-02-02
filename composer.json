@@ -10,7 +10,7 @@
         }
     ],
 		"require": {
-				"phbergsmann/typo3cmsinstaller": "*"
+				"phbergsmann/typo3cmsinstaller": "dev-master"
 		},
     "conflict": {
         "typo3-ter/tq_seo_sitemap": "*"
