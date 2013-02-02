@@ -1,16 +1,16 @@
 # TYPO3 Extension "tq_seo"
 Search Engine Optimization (SEO), Indexed Google-Sitemap (TXT- and XML-Sitemap) for all Extensions (pibase, extbase), Metatags, Canonical-URL, Pagetitle manipulations, Crawler verification, Piwik and Google Analytics support and some more... multi-language- and multi-tree-support
 
-## Version 4.0.1
+## Version 5.0.0
 
 
 
 
 <table>
-	<tr><td>Version</td><td>4.0.1 stable</td></tr>
-	<tr><td>Release date</td><td>03. February 2012</td></tr>
+	<tr><td>Version</td><td>5.0.0 stable</td></tr>
+	<tr><td>Release date</td><td>25. May 2012</td></tr>
 	<tr><td>Author</td><td>Markus Blaschke</td></tr>
-	<tr><td>Comment</td><td>Fixed requirements (at least 4.5)</td></tr>
+	<tr><td>Comment</td><td>SEO page module, many fixes and improvements (see changelog/forge.typo3.org)</td></tr>
 </table>
 
 ## !! Attention !!
