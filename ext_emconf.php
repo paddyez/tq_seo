@@ -3,7 +3,7 @@
 /***************************************************************
  * Extension Manager/Repository config file for ext "".
  *
- * Auto generated 02-02-2013 16:53
+ * Auto generated 02-02-2013 16:54
  *
  * Manual updates:
  * Only the data in the array - everything else is removed by next
