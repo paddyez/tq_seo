@@ -28,7 +28,7 @@
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id$
+ * @version		$Id: class.pagetitle.php 49810 2011-07-14 14:24:09Z mblaschke $
  */
 class user_tqseo_pagetitle {
 
@@ -57,6 +57,9 @@ class user_tqseo_pagetitle {
 		if( !empty($tsSetup['plugin.']['tq_seo.']) ) {
 			$tsSeoSetup = $tsSetup['plugin.']['tq_seo.'];
 		}
+		
+		// Call hook
+		tx_tqseo_tools::callHook('pagetitle-setup', $this, $tsSeoSetup);
 
 		// get stdwrap list
 		if( !empty($tsSeoSetup['pageTitle.']['stdWrap.']) ) {
@@ -195,6 +198,9 @@ class user_tqseo_pagetitle {
 		if( !empty($stdWrapList['after.']) ) {
 			$ret = $this->cObj->stdWrap($ret, $stdWrapList['after.']);
 		}
+		
+		// Call hook
+		tx_tqseo_tools::callHook('pagetitle-output', $this, $ret);
 
 		return $ret;
 	}

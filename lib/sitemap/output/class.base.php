@@ -23,38 +23,70 @@
 ***************************************************************/
 
 /**
- * Robots txt
+ * Sitemap Output Base
  *
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id: class.robots_txt.php 49776 2011-07-13 09:53:11Z mblaschke $
+ * @version		$Id: class.base.php 51617 2011-09-01 09:08:08Z mblaschke $
  */
-class tx_tqseo_robots_txt {
-
-	###########################################################################
-	# Methods
-	###########################################################################
-
+abstract class tx_tqseo_sitemap_output_base {
 
 	###########################################################################
 	# Methods
 	###########################################################################
 
 	/**
-	 * Fetch sitemap information and generate sitemap
+	 * Output sitemap
+	 *
+	 * @return	string
 	 */
 	public function main() {
 		global $TSFE, $TYPO3_DB, $TYPO3_CONF_VARS;
-		
-		//$domain = tx_tqseo_tools::getSysDomain();
-		
-		// TODO
+
+		// INIT
+		$this->tsSetup		= $TSFE->tmpl->setup['plugin.']['tq_seo.']['sitemap.'];
+
+		// check if sitemap is enabled
+		if( empty($this->tsSetup['enable']) ) {
+			$this->showError();
+		}
+
+		$ret .= $this->_build();
+
+		return $ret;
 	}
-	
+
+	/**
+	 * Show error
+	 *
+	 * @param	string	$msg			Message
+	 */
+	protected function showError($msg = null) {
+		global $TSFE;
+
+		if( $msg === null ) {
+			$msg = 'Sitemap is not available, please check your configuration';
+		}
+
+		header('HTTP/1.0 503 Service Unavailable');
+		$TSFE->pageErrorHandler( true, NULL, $msg );
+		exit;
+	}
+
+	###########################################################################
+	# Abstract methods
+	###########################################################################
+	/*
+	 * Build
+	 *
+	 * @return string
+	 */
+	abstract protected function _build();
+
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/sitemap/output/class.base.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/sitemap/output/class.base.php']);
 }
 ?>

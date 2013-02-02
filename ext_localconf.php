@@ -3,6 +3,8 @@ if (!defined ('TYPO3_MODE')) {
  	die ('Access denied.');
 }
 
+$confArr = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tq_seo']);
+
 #################################################
 ## SEO
 #################################################
@@ -10,7 +12,8 @@ if (!defined ('TYPO3_MODE')) {
 $TYPO3_CONF_VARS['FE']['pageOverlayFields'] .= ',tx_tqseo_pagetitle,tx_tqseo_pagetitle_prefix,tx_tqseo_pagetitle_suffix,tx_tqseo_canonicalurl';
 $TYPO3_CONF_VARS['FE']['addRootLineFields'] .= ',tx_tqseo_pagetitle_prefix,tx_tqseo_pagetitle_suffix,tx_tqseo_inheritance';
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typoLink_PostProc'][] = 'EXT:tq_seo/lib/class.linkparser.php:user_tqseo_linkparser->main';
+//$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typoLink_PostProc'][] = 'EXT:tq_seo/lib/class.linkparser.php:user_tqseo_linkparser->main';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typoLink_PostProc'][] = 'EXT:tq_seo/lib/sitemap/class.sitemap_indexer.php:user_tqseo_sitemap_indexer->hook_linkParse';
 
 // Caching framework
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'tx_tqseo_cache->clearAll';
@@ -31,5 +34,34 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheAction
 
 // Sitemal controll ajax
 $TYPO3_CONF_VARS['BE']['AJAX']['tx_tqseo_sitemap::clearSeoSitemap'] = 'EXT:tq_seo/hooks/sitemap/class.cache_controller.php:tx_tqseo_sitemap_cache_controller->clearSeoSitemap';
+
+#################################################
+## TT_NEWS
+#################################################
+if( !empty($confArr['enableIntegrationTTNews']) ) {
+	// Metatag fetch hook
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_news']['extraItemMarkerHook']['tqseo'] = 'EXT:tq_seo/hooks/tt_news/class.metatags.php:&tx_tqseo_hook_ttnews_metatags';
+}
+
+#################################################
+## SCHEDULER
+#################################################
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_tqseo_scheduler_task_cleanup'] = array(
+    'extension'        => $_EXTKEY,
+    'title'            => 'TQ SEO Cleanup',
+    'description'      => 'Cleanup old sitemap entries'
+);
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_tqseo_scheduler_task_sitemap_xml'] = array(
+    'extension'        => $_EXTKEY,
+    'title'            => 'TQ SEO sitemap.xml builder (BETA!)',
+    'description'      => 'Build sitemap xml as static file (in uploads/tx_tqseo/sitemap-xml/)'
+);
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_tqseo_scheduler_task_sitemap_txt'] = array(
+    'extension'        => $_EXTKEY,
+    'title'            => 'TQ SEO sitemap.txt builder (BETA!)',
+    'description'      => 'Build sitemap txt as static file (in uploads/tx_tqseo/sitemap-txt/)'
+);
 
 ?>

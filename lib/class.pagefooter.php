@@ -28,7 +28,7 @@
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id$
+ * @version		$Id: class.pagefooter.php 50537 2011-08-04 15:01:14Z mblaschke $
  */
 class user_tqseo_pagefooter {
 
@@ -56,6 +56,9 @@ class user_tqseo_pagefooter {
 		if( !empty($tsSetup['plugin.']['tq_seo.']['services.']) ) {
 			$tsServices = $tsSetup['plugin.']['tq_seo.']['services.'];
 		}
+		
+		// Call hook
+		tx_tqseo_tools::callHook('pagefooter-setup', $this, $tsServices);
 
 		#########################################
 		# GOOGLE ANALYTICS
@@ -95,16 +98,18 @@ pageTracker._trackPageview();
 } catch(err) {}</script>';
 
 
-				$ret[] = $tmp;
+				$ret['ga'] = $tmp;
 
 
 				if( !empty($gaConf['trackDownloads']) && !empty($gaConf['trackDownloadsScript']) ) {
 					$jsFile = t3lib_div::getFileAbsFileName($gaConf['trackDownloadsScript']);
 					$jsfile = preg_replace('/^'.preg_quote(PATH_site,'/').'/i','',$jsFile);
-					$ret[] = '<script type="text/javascript" src="'.htmlspecialchars($jsfile).'"></script>';
+					$ret['ga.trackdownload'] = '<script type="text/javascript" src="'.htmlspecialchars($jsfile).'"></script>';
 				}
 			} elseif($gaEnabled && $beLoggedIn) {
-				$ret[] = '<!-- Google Analytics disabled - Backend-Login detected -->';
+				// Backend login detected, disable cache because this page is viewed by BE-users
+				$TSFE->set_no_cache('tq_seo: Backend login disables google analytics');
+				$ret['ga.disabled'] = '<!-- Google Analytics disabled - Backend-Login detected -->';
 			}
 		}
 
@@ -142,11 +147,16 @@ piwikTracker.enableLinkTracking();
 } catch( err ) {}
 </script><noscript><p><img src="http://'.htmlspecialchars($piwikConf['url']).'/piwik.php?idsite='.htmlspecialchars($piwikConf['id']).'" style="border:0" alt="" /></p></noscript>';
 
-				$ret[] = $tmp;
+				$ret['piwik'] = $tmp;
 			} elseif($piwikEnabled && $beLoggedIn) {
-				$ret[] = '<!-- Piwik disabled - Backend-Login detected -->';
+				// Backend login detected, disable cache because this page is viewed by BE-users
+				$TSFE->set_no_cache('tq_seo: Backend login disables piwik');
+				$ret['piwik.disabled'] = '<!-- Piwik disabled - Backend-Login detected -->';
 			}
 		}
+		
+		// Call hook
+		tx_tqseo_tools::callHook('pagefooter-output', $this, $ret);
 
 		return implode("\n", $ret);
 	}

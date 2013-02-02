@@ -23,38 +23,48 @@
 ***************************************************************/
 
 /**
- * Robots txt
+ * Scheduler Task Sitemap TXT
  *
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id: class.robots_txt.php 49776 2011-07-13 09:53:11Z mblaschke $
+ * @version		$Id: class.sitemap_txt.php 50614 2011-08-05 13:39:18Z mblaschke $
  */
-class tx_tqseo_robots_txt {
+class tx_tqseo_scheduler_task_sitemap_txt extends tx_tqseo_scheduler_task_sitemap_base {
 
 	###########################################################################
-	# Methods
+	# Attributes
 	###########################################################################
 
+	/**
+	 * Sitemap base directory
+	 *
+	 * @var string
+	 */
+	protected $_sitemapDir = 'uploads/tx_tqseo/sitemap_txt';
 
 	###########################################################################
 	# Methods
 	###########################################################################
 
 	/**
-	 * Fetch sitemap information and generate sitemap
+	 * Build sitemap
+	 *
+	 * @param	integer	$rootPageId	Root page id
 	 */
-	public function main() {
-		global $TSFE, $TYPO3_DB, $TYPO3_CONF_VARS;
-		
-		//$domain = tx_tqseo_tools::getSysDomain();
-		
-		// TODO
+	protected function _buildSitemap($rootPageId) {
+
+		$builder = new tx_tqseo_sitemap_builder_txt();
+		$content = $builder->sitemap();
+
+		$this->_writeToFile(PATH_site.'/'.$this->_sitemapDir.'/tree-'.(int)$rootPageId.'.txt.gz', $content);
+
+		return true;
 	}
-	
+
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/scheduler/class.sitemap_txt.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/scheduler/class.sitemap_txt.php']);
 }
 ?>

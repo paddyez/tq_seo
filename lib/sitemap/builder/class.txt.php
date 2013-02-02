@@ -23,38 +23,56 @@
 ***************************************************************/
 
 /**
- * Robots txt
+ * Sitemap TXT
  *
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id: class.robots_txt.php 49776 2011-07-13 09:53:11Z mblaschke $
+ * @version		$Id: class.txt.php 50006 2011-07-21 14:30:09Z mblaschke $
  */
-class tx_tqseo_robots_txt {
-
-	###########################################################################
-	# Methods
-	###########################################################################
-
+class tx_tqseo_sitemap_builder_txt extends tx_tqseo_sitemap_builder_base {
 
 	###########################################################################
 	# Methods
 	###########################################################################
 
 	/**
-	 * Fetch sitemap information and generate sitemap
+	 * Create sitemap index
+	 *
+	 * @return	string
 	 */
-	public function main() {
-		global $TSFE, $TYPO3_DB, $TYPO3_CONF_VARS;
-		
-		//$domain = tx_tqseo_tools::getSysDomain();
-		
-		// TODO
+	public function sitemapIndex() {
+		return '';
 	}
-	
+
+	/**
+	 * Create sitemap (for page)
+	 *
+	 * @param	integer	$page	Page
+	 * @return	string
+	 */
+	public function sitemap($page = null) {
+		$ret = array();
+
+		foreach($this->sitemapPages as $sitemapPage) {
+			if(empty($this->pages[ $sitemapPage['page_uid'] ])) {
+				// invalid page
+				continue;
+			}
+
+			$page = $this->pages[ $sitemapPage['page_uid'] ];
+
+			$ret[] = t3lib_div::locationHeaderUrl( $sitemapPage['page_url'] );
+		}
+
+		// Call hook
+		tx_tqseo_tools::callHook('sitemap-text-output', $this, $ret);
+
+		return implode("\n", $ret);
+	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/sitemap/builder/class.txt.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/sitemap/builder/class.txt.php']);
 }
 ?>

@@ -28,7 +28,7 @@
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id$
+ * @version		$Id: class.http.php 49810 2011-07-14 14:24:09Z mblaschke $
  */
 class user_tqseo_http {
 
@@ -112,6 +112,9 @@ class user_tqseo_http {
 				}
 			}
 		}
+		
+		// Call hook
+		tx_tqseo_tools::callHook('httpheader-output', $this, $headers);
 
 		#####################################
 		# Sender headers

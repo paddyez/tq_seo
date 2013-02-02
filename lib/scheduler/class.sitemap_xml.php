@@ -23,38 +23,61 @@
 ***************************************************************/
 
 /**
- * Robots txt
+ * Scheduler Task Sitemap XML
  *
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id: class.robots_txt.php 49776 2011-07-13 09:53:11Z mblaschke $
+ * @version		$Id: class.sitemap_xml.php 50617 2011-08-05 14:19:52Z mblaschke $
  */
-class tx_tqseo_robots_txt {
+class tx_tqseo_scheduler_task_sitemap_xml extends tx_tqseo_scheduler_task_sitemap_base {
 
 	###########################################################################
-	# Methods
+	# Attributes
 	###########################################################################
 
+	/**
+	 * Sitemap base directory
+	 *
+	 * @var string
+	 */
+	protected $_sitemapDir = 'uploads/tx_tqseo/sitemap_xml';
 
 	###########################################################################
 	# Methods
 	###########################################################################
 
 	/**
-	 * Fetch sitemap information and generate sitemap
+	 * Build sitemap
+	 *
+	 * @param	integer	$rootPageId	Root page id
 	 */
-	public function main() {
-		global $TSFE, $TYPO3_DB, $TYPO3_CONF_VARS;
-		
-		//$domain = tx_tqseo_tools::getSysDomain();
-		
-		// TODO
+	protected function _buildSitemap($rootPageId) {
+		global $TSFE;
+
+		// Init builder
+		$builder = new tx_tqseo_sitemap_builder_xml();
+		$builder->indexPathTemplate = $this->_generateSitemapLinkTemplate('root-'.(int)$rootPageId.'-###PAGE###.xml');
+
+		// Get list of pages
+		$pageCount	= $builder->pageCount();
+
+		// Index
+		$content = $builder->sitemapIndex();
+		$this->_writeToFile(PATH_site.'/'.$this->_sitemapDir.'/tree-'.(int)$rootPageId.'-index.xml.gz', $content);
+
+		// Page
+		for($i=0; $i<$pageCount; $i++) {
+			$content = $builder->sitemap($i);
+			$this->_writeToFile(PATH_site.'/'.$this->_sitemapDir.'/tree-'.(int)$rootPageId.'-'.(int)$i.'.xml.gz', $content);
+		}
+
+		return true;
 	}
-	
+
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/class.robots_txt.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/scheduler/class.sitemap_xml.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tq_seo/lib/scheduler/class.sitemap_xml.php']);
 }
 ?>

@@ -28,14 +28,21 @@
  * @author		Blaschke, Markus <blaschke@teqneers.de>
  * @package 	tq_seo
  * @subpackage	lib
- * @version		$Id$
+ * @version		$Id: class.cache_controller.php 49810 2011-07-14 14:24:09Z mblaschke $
  */
 class tx_tqseo_sitemap_cache_controller {
 	public function clearSeoSitemap() {
 		global $TYPO3_DB;
+		
+		$ret = true;
 
+		// Call hook
+		tx_tqseo_tools::callHook('sitemap-clear', $this, $ret);
+		
 		$query = 'TRUNCATE tx_tqseo_sitemap';
 		$TYPO3_DB->sql_query($query);
+		
+		return $ret;
 	}
 }
 
